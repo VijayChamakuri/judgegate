@@ -1,0 +1,55 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+      - run: uv sync --frozen --all-groups
+      - name: Lint and format
+        run: uv run ruff check . && uv run ruff format --check .
+      - name: Types
+        run: uv run mypy src
+      - name: Unit tests (includes README-matches-results check)
+        run: uv run pytest -q --cov=judgegate --cov-report=term
+  reproduce:
+    # Linux runners cannot run MLX, so this recomputes every statistic from the committed model outputs.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+      - run: uv sync --frozen --all-groups
+      - name: Recompute results from cached judge verdicts
+        run: uv run judgegate analyze
+      - name: Results match the committed ones
+        run: |
+          uv run python - <<'PY'
+          import json, math, subprocess
+
+          def same(a, b, path="$"):
+              if isinstance(a, dict):
+                  assert a.keys() == b.keys(), path
+                  for k in a:
+                      same(a[k], b[k], f"{path}.{k}")
+              elif isinstance(a, list):
+                  assert len(a) == len(b), path
+                  for i, (x, y) in enumerate(zip(a, b)):
+                      same(x, y, f"{path}[{i}]")
+              elif isinstance(a, float) or isinstance(b, float):
+                  assert math.isclose(a, b, rel_tol=1e-6, abs_tol=1e-9), (path, a, b)
+              else:
+                  assert a == b, (path, a, b)
+
+          for f in ("results/judgegate.json", "results/coverage.json"):
+              same(json.loads(subprocess.check_output(["git", "show", f"HEAD:{f}"])), json.load(open(f)))
+          print("results reproduce (floats to 1e-6)")
+          PY

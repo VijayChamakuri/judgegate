@@ -1,0 +1,1034 @@
+{
+  "reps": 500,
+  "population": 3000,
+  "grid": [
+    {
+      "judge_strength": 0.3,
+      "true_error": 0.01,
+      "audits": 40,
+      "wilson_random_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.10533772158802486
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.362,
+        "mean_upper": 0.026034893281590747
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.03950547435688504
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.766,
+        "mean_upper": 0.023070157961822085
+      }
+    },
+    {
+      "judge_strength": 0.3,
+      "true_error": 0.01,
+      "audits": 120,
+      "wilson_random_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.04799243283535995
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.706,
+        "mean_upper": 0.02326377322985248
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.026220797227767306
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.906,
+        "mean_upper": 0.01942914014661398
+      }
+    },
+    {
+      "judge_strength": 0.3,
+      "true_error": 0.03,
+      "audits": 40,
+      "wilson_random_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.13457849937855568
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.72,
+        "mean_upper": 0.06482431639534102
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 0.99,
+        "mean_upper": 0.06315041767695764
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.88,
+        "mean_upper": 0.05633331929424385
+      }
+    },
+    {
+      "judge_strength": 0.3,
+      "true_error": 0.03,
+      "audits": 120,
+      "wilson_random_audits": {
+        "coverage": 0.994,
+        "mean_upper": 0.07655925817080542
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.894,
+        "mean_upper": 0.054248412228418356
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 0.982,
+        "mean_upper": 0.048855181066790765
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.956,
+        "mean_upper": 0.0458995129552522
+      }
+    },
+    {
+      "judge_strength": 0.3,
+      "true_error": 0.1,
+      "audits": 40,
+      "wilson_random_audits": {
+        "coverage": 0.994,
+        "mean_upper": 0.2330677545221524
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.946,
+        "mean_upper": 0.17579049055694795
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 0.964,
+        "mean_upper": 0.1502272645827013
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.95,
+        "mean_upper": 0.149583555017106
+      }
+    },
+    {
+      "judge_strength": 0.3,
+      "true_error": 0.1,
+      "audits": 120,
+      "wilson_random_audits": {
+        "coverage": 0.984,
+        "mean_upper": 0.1659615852658827
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.958,
+        "mean_upper": 0.1422219221950194
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 0.968,
+        "mean_upper": 0.13026614605034703
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.968,
+        "mean_upper": 0.13009374464239107
+      }
+    },
+    {
+      "judge_strength": 0.6,
+      "true_error": 0.01,
+      "audits": 40,
+      "wilson_random_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.10533772158802486
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.362,
+        "mean_upper": 0.019911510556890024
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.03755961259427276
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.89,
+        "mean_upper": 0.02041529914403738
+      }
+    },
+    {
+      "judge_strength": 0.6,
+      "true_error": 0.01,
+      "audits": 120,
+      "wilson_random_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.04799243283535995
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.706,
+        "mean_upper": 0.020207099104180896
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.024967070570700706
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.962,
+        "mean_upper": 0.016804210382199383
+      }
+    },
+    {
+      "judge_strength": 0.6,
+      "true_error": 0.03,
+      "audits": 40,
+      "wilson_random_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.13457849937855568
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.72,
+        "mean_upper": 0.052718031531701286
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.05888152595442507
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.942,
+        "mean_upper": 0.05002683531204731
+      }
+    },
+    {
+      "judge_strength": 0.6,
+      "true_error": 0.03,
+      "audits": 120,
+      "wilson_random_audits": {
+        "coverage": 0.994,
+        "mean_upper": 0.07655925817080542
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.898,
+        "mean_upper": 0.04777629550244849
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 0.988,
+        "mean_upper": 0.04651220436753776
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.966,
+        "mean_upper": 0.04168258573580312
+      }
+    },
+    {
+      "judge_strength": 0.6,
+      "true_error": 0.1,
+      "audits": 40,
+      "wilson_random_audits": {
+        "coverage": 0.994,
+        "mean_upper": 0.2330677545221524
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.942,
+        "mean_upper": 0.14977189923165501
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 0.984,
+        "mean_upper": 0.1365457335856359
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.97,
+        "mean_upper": 0.13436624730614566
+      }
+    },
+    {
+      "judge_strength": 0.6,
+      "true_error": 0.1,
+      "audits": 120,
+      "wilson_random_audits": {
+        "coverage": 0.984,
+        "mean_upper": 0.1659615852658827
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.952,
+        "mean_upper": 0.12852973381290614
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 0.994,
+        "mean_upper": 0.12307479924250707
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.986,
+        "mean_upper": 0.1221537211431016
+      }
+    },
+    {
+      "judge_strength": 0.9,
+      "true_error": 0.01,
+      "audits": 40,
+      "wilson_random_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.10533772158802486
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.362,
+        "mean_upper": 0.015487952959345144
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.03754323719614491
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.886,
+        "mean_upper": 0.01898358921365118
+      }
+    },
+    {
+      "judge_strength": 0.9,
+      "true_error": 0.01,
+      "audits": 120,
+      "wilson_random_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.04799243283535995
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.706,
+        "mean_upper": 0.017754855802479055
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.0249977077293809
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.976,
+        "mean_upper": 0.015793687530541403
+      }
+    },
+    {
+      "judge_strength": 0.9,
+      "true_error": 0.03,
+      "audits": 40,
+      "wilson_random_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.13457849937855568
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.72,
+        "mean_upper": 0.04313582372094776
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.05856968595928748
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.976,
+        "mean_upper": 0.04706067738102845
+      }
+    },
+    {
+      "judge_strength": 0.9,
+      "true_error": 0.03,
+      "audits": 120,
+      "wilson_random_audits": {
+        "coverage": 0.994,
+        "mean_upper": 0.07655925817080542
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.896,
+        "mean_upper": 0.042996956147400775
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 0.982,
+        "mean_upper": 0.0464372509514024
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.984,
+        "mean_upper": 0.040106675446238936
+      }
+    },
+    {
+      "judge_strength": 0.9,
+      "true_error": 0.1,
+      "audits": 40,
+      "wilson_random_audits": {
+        "coverage": 0.994,
+        "mean_upper": 0.2330677545221524
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.94,
+        "mean_upper": 0.12952409175504667
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 0.998,
+        "mean_upper": 0.13427607303610886
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.978,
+        "mean_upper": 0.12861279088844216
+      }
+    },
+    {
+      "judge_strength": 0.9,
+      "true_error": 0.1,
+      "audits": 120,
+      "wilson_random_audits": {
+        "coverage": 0.984,
+        "mean_upper": 0.1659615852658827
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.956,
+        "mean_upper": 0.1185863289820675
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 0.996,
+        "mean_upper": 0.1217062651457571
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.986,
+        "mean_upper": 0.11875665475392878
+      }
+    }
+  ],
+  "real_data": [
+    {
+      "judge": "llama",
+      "setting": "card_feed",
+      "confidence_quantile": 0.0,
+      "true_error": 0.3342916884474647,
+      "population": 3826,
+      "audits": 40,
+      "wilson_random_audits": {
+        "coverage": 0.981,
+        "mean_upper": 0.4887519872453023
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.962,
+        "mean_upper": 0.468473071967644
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 0.961,
+        "mean_upper": 0.46701277969462096
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.948,
+        "mean_upper": 0.46533701390533355
+      }
+    },
+    {
+      "judge": "llama",
+      "setting": "card_feed",
+      "confidence_quantile": 0.0,
+      "true_error": 0.3342916884474647,
+      "population": 3826,
+      "audits": 400,
+      "wilson_random_audits": {
+        "coverage": 0.982,
+        "mean_upper": 0.38222449894896293
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.98,
+        "mean_upper": 0.37688413380108177
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 0.975,
+        "mean_upper": 0.37691362410040524
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.972,
+        "mean_upper": 0.37683360186385034
+      }
+    },
+    {
+      "judge": "llama",
+      "setting": "card_feed",
+      "confidence_quantile": 0.1,
+      "true_error": 0.28666860296253266,
+      "population": 3443,
+      "audits": 40,
+      "wilson_random_audits": {
+        "coverage": 0.983,
+        "mean_upper": 0.43972782162754154
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.945,
+        "mean_upper": 0.41519732383899477
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 0.962,
+        "mean_upper": 0.41749073969008166
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.935,
+        "mean_upper": 0.41451077517143065
+      }
+    },
+    {
+      "judge": "llama",
+      "setting": "card_feed",
+      "confidence_quantile": 0.1,
+      "true_error": 0.28666860296253266,
+      "population": 3443,
+      "audits": 400,
+      "wilson_random_audits": {
+        "coverage": 0.988,
+        "mean_upper": 0.33428588425031047
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.982,
+        "mean_upper": 0.3291422027396038
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 0.983,
+        "mean_upper": 0.32837200491120916
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.98,
+        "mean_upper": 0.3279369563893677
+      }
+    },
+    {
+      "judge": "llama",
+      "setting": "card_feed",
+      "confidence_quantile": 0.2,
+      "true_error": 0.25318523358379613,
+      "population": 3061,
+      "audits": 40,
+      "wilson_random_audits": {
+        "coverage": 0.986,
+        "mean_upper": 0.40534504601886046
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.957,
+        "mean_upper": 0.3784010227652687
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 0.967,
+        "mean_upper": 0.3768930950859366
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.947,
+        "mean_upper": 0.3724171238400356
+      }
+    },
+    {
+      "judge": "llama",
+      "setting": "card_feed",
+      "confidence_quantile": 0.2,
+      "true_error": 0.25318523358379613,
+      "population": 3061,
+      "audits": 400,
+      "wilson_random_audits": {
+        "coverage": 0.982,
+        "mean_upper": 0.2983320398725055
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.978,
+        "mean_upper": 0.29304560124835344
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 0.963,
+        "mean_upper": 0.2925855413604903
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.966,
+        "mean_upper": 0.2919073902157953
+      }
+    },
+    {
+      "judge": "llama",
+      "setting": "card_feed",
+      "confidence_quantile": 0.5,
+      "true_error": 0.17284595300261096,
+      "population": 1915,
+      "audits": 40,
+      "wilson_random_audits": {
+        "coverage": 0.988,
+        "mean_upper": 0.317739509315607
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.94,
+        "mean_upper": 0.2835159605677435
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 0.966,
+        "mean_upper": 0.28695398452068477
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.928,
+        "mean_upper": 0.2782835771049622
+      }
+    },
+    {
+      "judge": "llama",
+      "setting": "card_feed",
+      "confidence_quantile": 0.5,
+      "true_error": 0.17284595300261096,
+      "population": 1915,
+      "audits": 400,
+      "wilson_random_audits": {
+        "coverage": 0.982,
+        "mean_upper": 0.2136861111179113
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.974,
+        "mean_upper": 0.2088502181331447
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 0.984,
+        "mean_upper": 0.20852533249948965
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.98,
+        "mean_upper": 0.2069904156452386
+      }
+    },
+    {
+      "judge": "llama",
+      "setting": "card_feed",
+      "confidence_quantile": 0.9,
+      "true_error": 0.04177545691906005,
+      "population": 383,
+      "audits": 40,
+      "wilson_random_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.1524341214548624
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.845,
+        "mean_upper": 0.09398531404055671
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.12447049736659699
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.819,
+        "mean_upper": 0.09347971542373625
+      }
+    },
+    {
+      "judge": "llama",
+      "setting": "upstream",
+      "confidence_quantile": 0.0,
+      "true_error": 0.04181913225300575,
+      "population": 3826,
+      "audits": 40,
+      "wilson_random_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.1489207266410898
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.802,
+        "mean_upper": 0.0890863913172674
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.11498639452183503
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.848,
+        "mean_upper": 0.08578738546024367
+      }
+    },
+    {
+      "judge": "llama",
+      "setting": "upstream",
+      "confidence_quantile": 0.0,
+      "true_error": 0.04181913225300575,
+      "population": 3826,
+      "audits": 400,
+      "wilson_random_audits": {
+        "coverage": 0.986,
+        "mean_upper": 0.0660949912404231
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.955,
+        "mean_upper": 0.060643598886059163
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 0.973,
+        "mean_upper": 0.06415880184182413
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.948,
+        "mean_upper": 0.05783343666755213
+      }
+    },
+    {
+      "judge": "llama",
+      "setting": "upstream",
+      "confidence_quantile": 0.1,
+      "true_error": 0.008713331397037467,
+      "population": 3443,
+      "audits": 40,
+      "wilson_random_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.10212940056635791
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.312,
+        "mean_upper": 0.024671424034487292
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.08289226560135472
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.392,
+        "mean_upper": 0.02349785165327736
+      }
+    },
+    {
+      "judge": "llama",
+      "setting": "upstream",
+      "confidence_quantile": 0.1,
+      "true_error": 0.008713331397037467,
+      "population": 3443,
+      "audits": 400,
+      "wilson_random_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.023251023439280274
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.874,
+        "mean_upper": 0.017304044667086627
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.028816461584235658
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.773,
+        "mean_upper": 0.017020872468951655
+      }
+    },
+    {
+      "judge": "llama",
+      "setting": "upstream",
+      "confidence_quantile": 0.2,
+      "true_error": 0.004246978111728194,
+      "population": 3061,
+      "audits": 40,
+      "wilson_random_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.09409898367500462
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.145,
+        "mean_upper": 0.011088520407693122
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.07642789103478245
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.199,
+        "mean_upper": 0.013155274658595386
+      }
+    },
+    {
+      "judge": "llama",
+      "setting": "upstream",
+      "confidence_quantile": 0.2,
+      "true_error": 0.004246978111728194,
+      "population": 3061,
+      "audits": 400,
+      "wilson_random_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.01656290944155116
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.844,
+        "mean_upper": 0.00980512350046943
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.02339738373961205
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.617,
+        "mean_upper": 0.009859299942681527
+      }
+    },
+    {
+      "judge": "llama",
+      "setting": "upstream",
+      "confidence_quantile": 0.5,
+      "true_error": 0.0,
+      "population": 1913,
+      "audits": 40,
+      "wilson_random_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.08762160119728539
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.0
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.052545522627917125
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 1.0,
+        "mean_upper": 0.0
+      }
+    },
+    {
+      "judge": "llama",
+      "setting": "upstream",
+      "confidence_quantile": 0.5,
+      "true_error": 0.0,
+      "population": 1913,
+      "audits": 400,
+      "wilson_random_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.00951229433429646
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.0
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.012242821221939544
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 1.0,
+        "mean_upper": 0.0
+      }
+    },
+    {
+      "judge": "llama",
+      "setting": "upstream",
+      "confidence_quantile": 0.9,
+      "true_error": 0.0,
+      "population": 403,
+      "audits": 40,
+      "wilson_random_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.08762160119728539
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.0
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.044616632511505695
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 1.0,
+        "mean_upper": 0.0
+      }
+    },
+    {
+      "judge": "qwen",
+      "setting": "upstream",
+      "confidence_quantile": 0.0,
+      "true_error": 0.04181913225300575,
+      "population": 3826,
+      "audits": 40,
+      "wilson_random_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.1489207266410898
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.802,
+        "mean_upper": 0.0887605904769027
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.11281165786472036
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.876,
+        "mean_upper": 0.08344996208532922
+      }
+    },
+    {
+      "judge": "qwen",
+      "setting": "upstream",
+      "confidence_quantile": 0.0,
+      "true_error": 0.04181913225300575,
+      "population": 3826,
+      "audits": 400,
+      "wilson_random_audits": {
+        "coverage": 0.986,
+        "mean_upper": 0.0660949912404231
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.954,
+        "mean_upper": 0.06050000224440297
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 0.978,
+        "mean_upper": 0.06322740853617696
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.961,
+        "mean_upper": 0.05676987251123598
+      }
+    },
+    {
+      "judge": "qwen",
+      "setting": "upstream",
+      "confidence_quantile": 0.1,
+      "true_error": 0.008713331397037467,
+      "population": 3443,
+      "audits": 40,
+      "wilson_random_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.10212940056635791
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.312,
+        "mean_upper": 0.02465875498472855
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.08015302563731767
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.422,
+        "mean_upper": 0.022635481317766853
+      }
+    },
+    {
+      "judge": "qwen",
+      "setting": "upstream",
+      "confidence_quantile": 0.1,
+      "true_error": 0.008713331397037467,
+      "population": 3443,
+      "audits": 400,
+      "wilson_random_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.023251023439280274
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.874,
+        "mean_upper": 0.017280884498061238
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.02789417770149161
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.854,
+        "mean_upper": 0.016474155354576046
+      }
+    },
+    {
+      "judge": "qwen",
+      "setting": "upstream",
+      "confidence_quantile": 0.2,
+      "true_error": 0.004246978111728194,
+      "population": 3061,
+      "audits": 40,
+      "wilson_random_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.09409898367500462
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.145,
+        "mean_upper": 0.011101954214705787
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.07424582532915378
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.232,
+        "mean_upper": 0.012796747182065806
+      }
+    },
+    {
+      "judge": "qwen",
+      "setting": "upstream",
+      "confidence_quantile": 0.2,
+      "true_error": 0.004246978111728194,
+      "population": 3061,
+      "audits": 400,
+      "wilson_random_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.01656290944155116
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 0.844,
+        "mean_upper": 0.009800750611530308
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.02268628894084091
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 0.712,
+        "mean_upper": 0.009744754863502571
+      }
+    },
+    {
+      "judge": "qwen",
+      "setting": "upstream",
+      "confidence_quantile": 0.5,
+      "true_error": 0.0,
+      "population": 1913,
+      "audits": 40,
+      "wilson_random_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.08762160119728539
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.0
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.05075274377011396
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 1.0,
+        "mean_upper": 0.0
+      }
+    },
+    {
+      "judge": "qwen",
+      "setting": "upstream",
+      "confidence_quantile": 0.5,
+      "true_error": 0.0,
+      "population": 1913,
+      "audits": 400,
+      "wilson_random_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.00951229433429646
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.0
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.01233953556714496
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 1.0,
+        "mean_upper": 0.0
+      }
+    },
+    {
+      "judge": "qwen",
+      "setting": "upstream",
+      "confidence_quantile": 0.9,
+      "true_error": 0.0,
+      "population": 403,
+      "audits": 40,
+      "wilson_random_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.08762160119728539
+      },
+      "ppi_plain_random_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.0
+      },
+      "active_ppi_judge_guided_audits": {
+        "coverage": 1.0,
+        "mean_upper": 0.04426306435208046
+      },
+      "active_ppi_tuned_same_sample": {
+        "coverage": 1.0,
+        "mean_upper": 0.0
+      }
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use this software or its results, please cite it as below."
+title: "JudgeGate: can an LLM judge replace the human audits that grant an AI agent autonomy?"
+authors:
+  - family-names: Chamakuri
+    given-names: Vijay
+version: 1.0.0
+date-released: 2026-11-10
+license: MIT
+repository-code: "https://github.com/VijayChamakuri/judgegate"
+url: "https://vijaychamakuri.github.io/judgegate/"
+keywords: [LLM-as-a-judge, evaluation, prediction-powered inference, active inference, AI agents, autonomy, calibration]
