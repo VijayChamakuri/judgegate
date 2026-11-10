@@ -17,7 +17,7 @@ Tested on {{lines}} real purchase-card bookings that council finance staff coded
 
 {{key_results}}
 
-![Left: autonomy each policy appears to earn (upstream, 2% budget). Right: months over budget on card-feed data (10% budget)](results/headline.png)
+![Left: autonomy each policy appears to earn (upstream, 2% budget, Llama judge). Right: how often each 95% bound really covers the true error rate on rare-error real slices](results/headline.png)
 
 ## Terms used below
 

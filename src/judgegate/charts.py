@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt  # noqa: E402
 
 from .data import RESULTS  # noqa: E402
 
-INK, MUTED, GRID, SURFACE = "#0b0b0b", "#52514e", "#e4e3df", "#fcfcfb"
+INK, MUTED, GRID, SURFACE = "#0b0b0b", "#52514e", "#e4e3df", "#ffffff"
 POLICY_STYLE = {  # fixed categorical order; colour follows the policy everywhere
     "human_wilson": ("#2a78d6", "o", "Human audits only (Wilson)"),
     "ppi_plain": ("#eb6834", "s", "Judge + random audits (plain PPI)"),
