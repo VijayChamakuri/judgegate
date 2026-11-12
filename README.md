@@ -4,7 +4,7 @@
 [![python](https://img.shields.io/badge/python-3.12-3776AB)](pyproject.toml)
 [![licence: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-JudgeGate measures whether a local LLM judge can replace the human audits that decide when a bookkeeping agent may post a general-ledger line on its own. On the 4,987 Stockport card lines from January 2020, out of 14,851 staff-coded lines in the file, plain PPI auto-posts 43.9% of live upstream lines at a 2% budget against 11.5% for the same audits and no judge, and on real slices that 95% bound covers the true error as little as 14.5% of the time.
+A bookkeeping agent may auto-post a GL line only when monthly human audits show its error is under budget, and the question is whether a local LLM judge can stand in for most of those audits. The test is 4,987 Stockport card lines from January 2020, out of 14,851 staff-coded lines, with two local 3B judges and four gate policies. Prediction-powered inference (PPI) estimates the error from the judge's score on every line, then corrects the judge's bias with those audits. Plain PPI auto-posts the most (43.9% vs 11.5% for human audits alone at a 2% budget), but its 95% bound can badly under-cover on low-error slices (as low as 14.5%), while active PPI and Wilson hold coverage.
 
 ```mermaid
 flowchart LR
@@ -39,30 +39,48 @@ The rollout and the coverage check are plotted in [`results/headline.png`](resul
 
 ## How it works
 
-The agent is TrustGate's coder, not an LLM. Character n-grams of the merchant, one-hot department and service, a local embedding (`BAAI/bge-small-en-v1.5`), and log amount go into logistic regression. The upstream setting also gets the council's procurement category, which in these years was assigned by staff and nearly fixes the account. The coder is refit every three months on months strictly before the month being coded ([`propose`](src/judgegate/agent.py)). Upstream accuracy on the 4,987 scored lines is 89.6%; card feed, which is what a card network actually sends, is 65.0%.
+### The agent
 
-The judge sees the line, the proposed account, and five similar bookings from earlier months. It does not see the staff account. The models are `Llama-3.2-3B-Instruct` and `Qwen2.5-3B-Instruct`, 4-bit, via MLX. Qwen is scored on upstream only. The score is one forward pass: the prompt ends at `Answer:`, and P(correct) is the softmax of the logits on the single tokens `A` and `B` ([`LetterScorer.letter_probs`](src/judgegate/llm.py)). Upstream AUC is 0.840 for Llama (95% bootstrap interval in the results doc) and 0.844 for Qwen. At the 0.5 cut, Llama rejects 80.8% of correct upstream bookings and Qwen rejects 32.3%. ECE on P(wrong) is 0.613 and 0.287. On the upstream lines where the two judges disagree at 0.5, Llama matches staff and Qwen does not on 76 lines, and Qwen matches staff and Llama does not on 2,180 (exact McNemar; the p-value underflows to 0 in float64). Agreement with staff is 69.7% for Qwen and 27.5% for Llama.
+The agent is [TrustGate](https://github.com/VijayChamakuri/trustgate)'s coder, not an LLM: character n-grams of the merchant, one-hot department and service, a `bge-small-en-v1.5` embedding, and log amount go into logistic regression. Upstream also gets the procurement category, which in these years nearly fixes the account. It is refit every three months on months strictly before the one being coded ([`propose`](src/judgegate/agent.py)). On the 4,987 scored lines that is 89.6% upstream and 65.0% on card feed.
 
-Each live month the gate walks a confidence grid from 0.30 up and takes the lowest threshold whose 95% upper bound, fit on earlier months only, is within the budget. Lines at or above it are auto-posted ([`choose_threshold`](src/judgegate/gate.py)). The first six months are shadow. A threshold needs at least 20 audited lines in the earlier months. Four policies share that rule, and the three that use people spend the same expected number of audits. Human audits use a Wilson bound on k random lines a month. The raw judge treats its own hard label as the truth and spends no audits. Plain PPI uses the judge's P(wrong) on every line plus k random audits, with the PPI++ weight λ fit on those audits. Active PPI draws each line with probability proportional to the judge's risk plus a floor of 0.2 times the mean risk, up-weights each audit by 1/π, and keeps λ at 1.
+### The judge
 
-Before month m, both PPI policies replace the raw score with a Platt map fit on audits from months before m. The map is fixed before that month's audits are drawn, so the estimators stay unbiased. If the earlier audits do not yet contain both outcomes, the raw score is kept.
+The judge sees the line, the proposed account, and five similar earlier bookings, and it does not see the staff account. `Llama-3.2-3B-Instruct` and `Qwen2.5-3B-Instruct` run 4-bit on MLX; Qwen is scored on upstream only. One forward pass reads P(correct) as the softmax of the `A` and `B` logits ([`LetterScorer.letter_probs`](src/judgegate/llm.py)). Both rank wrong bookings above right ones and are too strict at a 0.5 cut; AUC, ECE, the McNemar counts, the likelihood-ratio p-values, and the review-order shares are in [docs/RESULTS.md](docs/RESULTS.md#judge-quality).
 
-Active PPI's per-line term, for a fixed λ, has mean equal to the true error rate whatever the judge's quality. `f` is P(wrong), `pi` is the audit probability, and `y` is read only on audited lines ([`active_ppi_terms`](src/judgegate/stats.py#L98-L103)):
+### The gate
+
+Each live month the gate takes the lowest confidence, from 0.30 up, whose 95% upper bound from earlier months fits the budget ([`choose_threshold`](src/judgegate/gate.py)). The first six months are shadow, and a threshold needs at least 20 earlier audits. Four policies share that rule, and the three that use people spend the same expected number of audits:
+
+- Human audits: a Wilson bound on k random lines a month.
+- Judge alone: the judge's hard label on every past line, and no audits.
+- Plain PPI: the judge's score on every line, plus k random audits, with λ fit on those audits.
+- Active PPI: audits drawn with probability proportional to the judge's risk plus a floor of 0.2 times the mean risk, each up-weighted by 1/π, and λ fixed at 1.
+
+Before month m, both PPI policies replace the raw score with a Platt map fit on earlier audits only, and keep the raw score when those audits do not yet contain both outcomes.
+
+### The estimator
+
+For a fixed λ, active PPI's per-line term has mean equal to the true error rate whatever the judge's quality. `f` is P(wrong), `pi` is the audit probability, and `y` is read only on audited lines ([`active_ppi_terms`](src/judgegate/stats.py#L98-L103)):
 
 ```python
-def active_ppi_terms(y: np.ndarray, f: np.ndarray, audited: np.ndarray, pi: np.ndarray, lam: float) -> np.ndarray:
-    """Per-item terms whose mean is unbiased for the error rate, for any fixed lam in [0, 1].
-    lam = 0 is plain inverse-probability weighting of the audits; lam = 1 fully trusts the judge
-    as a control variate."""
+def active_ppi_terms(
+    y: np.ndarray,
+    f: np.ndarray,
+    audited: np.ndarray,
+    pi: np.ndarray,
+    lam: float,
+) -> np.ndarray:
+    """Per-item terms whose mean is unbiased for the error rate, for
+    any fixed lam in [0, 1]. lam = 0 is plain inverse-probability
+    weighting of the audits; lam = 1 fully trusts the judge as a
+    control variate."""
     y = np.where(audited, np.asarray(y, float), 0.0)
     return lam * f + np.where(audited, (y - lam * f) / pi, 0.0)
 ```
 
-The upper bound is the mean of those terms plus 1.96 standard errors, clipped to [0, 1] ([`active_ppi_upper`](src/judgegate/stats.py)). I keep λ = 1 in the gate. Choosing λ to minimise the variance of the same sample is in the coverage tables as its own column: on small, nearly error-free samples that selection sits under the truth.
+The upper bound is the mean of those terms plus 1.96 standard errors, clipped to [0, 1] ([`active_ppi_upper`](src/judgegate/stats.py)). The gate uses λ = 1, because tuning λ on the same sample under-covers when errors are rare; that variant is its own column in [docs/RESULTS.md](docs/RESULTS.md).
 
-The judge is a weak second signal once the agent's own confidence is in the model. Cross-validated AUC for the agent's errors goes from 0.942 to 0.949 with Llama upstream, and to 0.950 with Qwen. On card feed it goes from 0.759 to 0.790. A likelihood-ratio test of the judge's coefficient gives p = 9e-28 upstream and p = 3e-62 on card feed. As a review order the judge loses to the agent: the riskiest 20% of upstream lines by Llama hold 62% of the errors, and the least confident 20% by the agent hold 84%.
-
-The algebra, the no-leakage rules, and the simulation design are in [docs/METHODOLOGY.md](docs/METHODOLOGY.md).
+The algebra and the no-leakage rules are in [docs/METHODOLOGY.md](docs/METHODOLOGY.md).
 
 ## Design decisions
 

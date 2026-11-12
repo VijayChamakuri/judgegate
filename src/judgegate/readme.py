@@ -11,6 +11,7 @@ import ast
 import inspect
 import json
 import re
+import textwrap
 from typing import Any
 
 from .data import RESULTS, ROOT, load_lines
@@ -357,6 +358,57 @@ def tables() -> dict[str, str]:
     }
 
 
+def _readme_excerpt(src: str, width: int = 68) -> str:
+    """Reflow the displayed excerpt so a GitHub code block does not scroll sideways.
+
+    The body is the function from stats.py. Only line breaks change.
+    """
+    lines = src.splitlines()
+    if not lines or not lines[0].startswith("def ") or "(" not in lines[0] or not lines[0].endswith(":"):
+        return src
+    name, after = lines[0][4:].split("(", 1)
+    if ") -> " not in after:
+        return src
+    args, ret = after.rsplit(") -> ", 1)
+    params = [p.strip() for p in args.split(",") if p.strip()]
+    wrapped = [f"def {name}("]
+    wrapped.extend(f"    {p}," for p in params)
+    wrapped.append(f") -> {ret}")
+    doc, code = _split_docstring(lines[1:])
+    if doc:
+        filled = textwrap.wrap(doc, width=width - 4, break_long_words=False, break_on_hyphens=False)
+        quote = '"""'
+        block = [f"    {quote}{filled[0]}"]
+        block.extend(f"    {line}" for line in filled[1:])
+        if len(block[-1]) + len(quote) <= width:
+            block[-1] += quote
+        else:
+            block.append(f"    {quote}")
+        wrapped.extend(block)
+    for line in code:
+        if len(line) <= width:
+            wrapped.append(line)
+            continue
+        indent = line[: len(line) - len(line.lstrip())]
+        wrapped.extend(textwrap.wrap(line, width=width, subsequent_indent=indent, break_long_words=False) or [line])
+    return "\n".join(wrapped)
+
+
+def _split_docstring(body: list[str]) -> tuple[str, list[str]]:
+    """Return the docstring text and the lines that follow it."""
+    if not body or '"""' not in body[0]:
+        return "", body
+    chunk: list[str] = []
+    for i, line in enumerate(body):
+        chunk.append(line)
+        quotes = line.count('"""')
+        closed = (i == 0 and quotes >= 2) or (i > 0 and quotes)
+        if closed:
+            text = " ".join(part.strip().strip('"') for part in chunk)
+            return " ".join(text.split()), body[i + 1 :]
+    return "", body
+
+
 def _sci(x: float) -> str:
     """Compact p-value. A stored 0 is float64 underflow, not a measured threshold."""
     if x == 0.0:
@@ -498,7 +550,7 @@ def readme_fields() -> dict[str, str]:
             f"Qwen's plain-PPI auto-post rates, at the same {HEAD['audits']} audits a month, differ from Llama's "
             f"by at most {100 * max(gaps):.1f} percentage points across the 2%, 5%, and 10% budgets."
         ),
-        "active_ppi_source": "".join(src_lines).rstrip("\n"),
+        "active_ppi_source": _readme_excerpt("".join(src_lines).rstrip("\n")),
         "active_ppi_link": f"src/judgegate/stats.py#L{start}-L{end}",
         "ece_llama": f"{ql['ece']:.3f}",
         "ece_qwen": f"{qq['ece']:.3f}",
@@ -538,6 +590,7 @@ def render_results_text() -> str:
     covid = next(x for x in eb["agent_error_accounts"] if x["account"] == "COVID 19")
     seeds = next(r["seeds"] for r in res["rollouts"] if r["policy"] == "human_wilson")
     live = _roll(res, "human_wilson", HEAD["audits"])
+    f = readme_fields()
     return f"""# Results
 
 Rendered from [`results/judgegate.json`](../results/judgegate.json) and [`results/coverage.json`](../results/coverage.json) by `judgegate readme`. [`tests/test_readme.py`](../tests/test_readme.py) fails if this file disagrees with a fresh render. The short version is the [README](../README.md).
@@ -550,7 +603,11 @@ Rollout rows are means over {seeds} independent audit draws, except the raw judg
 
 AUC is a 95% bootstrap interval (500 resamples). Cohen's κ, false pass, and false fail are at a 0.5 cut on P(correct). False pass is the share of wrong bookings the judge approved. False fail is the share of correct bookings it rejected. ECE is expected calibration error over 10 bins, on P(wrong).
 
+Upstream AUC is {f["auc_llama"]} for Llama and {f["auc_qwen"]} for Qwen (the table rounds the 95% bootstrap interval). At the 0.5 cut, Llama rejects {f["ff_llama"]} of correct upstream bookings and Qwen rejects {f["ff_qwen"]}. ECE on P(wrong) is {f["ece_llama"]} and {f["ece_qwen"]}.
+
 Llama vs Qwen on the same upstream lines: Llama matches staff and Qwen does not on {mc["only_a_right"]} lines, the reverse on {mc["only_b_right"]:,}. The exact McNemar p-value underflows to {_sci(float(mc["p_value"]))} in float64. Agreement with staff is {pct(mc["accuracy_a"])} (Llama) and {pct(mc["accuracy_b"])} (Qwen).
+
+Added to the agent's own confidence, cross-validated AUC for the agent's errors goes from {f["inc_up_agent"]} to {f["inc_up_llama"]} with Llama upstream and to {f["inc_up_qwen"]} with Qwen, and from {f["inc_cf_agent"]} to {f["inc_cf_llama"]} on card feed. A likelihood-ratio test of the judge's coefficient gives p = {f["lr_up"]} upstream and p = {f["lr_cf"]} on card feed. The riskiest 20% of upstream lines by Llama hold {f["tri_judge"]} of the errors; the agent's least-confident 20% hold {f["tri_agent"]}.
 
 ![Judge calibration. Predicted P(wrong) against the share staff marked wrong.](../results/calibration.png)
 

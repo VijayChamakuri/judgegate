@@ -14,7 +14,11 @@ Rollout rows are means over 20 independent audit draws, except the raw judge, wh
 
 AUC is a 95% bootstrap interval (500 resamples). Cohen's κ, false pass, and false fail are at a 0.5 cut on P(correct). False pass is the share of wrong bookings the judge approved. False fail is the share of correct bookings it rejected. ECE is expected calibration error over 10 bins, on P(wrong).
 
+Upstream AUC is 0.840 for Llama and 0.844 for Qwen (the table rounds the 95% bootstrap interval). At the 0.5 cut, Llama rejects 80.8% of correct upstream bookings and Qwen rejects 32.3%. ECE on P(wrong) is 0.613 and 0.287.
+
 Llama vs Qwen on the same upstream lines: Llama matches staff and Qwen does not on 76 lines, the reverse on 2,180. The exact McNemar p-value underflows to 0 in float64. Agreement with staff is 27.5% (Llama) and 69.7% (Qwen).
+
+Added to the agent's own confidence, cross-validated AUC for the agent's errors goes from 0.942 to 0.949 with Llama upstream and to 0.950 with Qwen, and from 0.759 to 0.790 on card feed. A likelihood-ratio test of the judge's coefficient gives p = 9e-28 upstream and p = 3e-62 on card feed. The riskiest 20% of upstream lines by Llama hold 62% of the errors; the agent's least-confident 20% hold 84%.
 
 ![Judge calibration. Predicted P(wrong) against the share staff marked wrong.](../results/calibration.png)
 
