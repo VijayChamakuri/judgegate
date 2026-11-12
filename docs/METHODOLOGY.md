@@ -73,6 +73,6 @@ Its expectation is the true error rate for any judge, because each audit is up-w
 ## Reproducing
 ```bash
 uv sync --all-groups
-uv run judgegate reproduce        # every number, chart, the site and README from committed outputs
+uv run judgegate reproduce        # every number, chart, the site, README, and docs/RESULTS.md from committed outputs
 uv run judgegate generate         # optional: re-run the models (Apple Silicon, ~4 h on an 8 GB M2)
 ```

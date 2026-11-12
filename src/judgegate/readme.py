@@ -7,14 +7,18 @@ cannot drift apart.
 
 from __future__ import annotations
 
+import ast
+import inspect
 import json
 import re
 from typing import Any
 
 from .data import RESULTS, ROOT, load_lines
+from .stats import active_ppi_terms
 
 TEMPLATE = ROOT / "docs" / "README.template.md"
 README = ROOT / "README.md"
+RESULTS_DOC = ROOT / "docs" / "RESULTS.md"
 
 JUDGE_LABEL = {"llama": "Llama-3.2-3B", "qwen": "Qwen2.5-3B"}
 SETTING_LABEL = {"card_feed": "Card feed", "upstream": "Upstream"}
@@ -353,9 +357,246 @@ def tables() -> dict[str, str]:
     }
 
 
+def _sci(x: float) -> str:
+    """Compact p-value. A stored 0 is float64 underflow, not a measured threshold."""
+    if x == 0.0:
+        return "0"
+    return f"{x:.0e}" if x < 1e-3 else f"{x:.3f}"
+
+
+def _test_count() -> int:
+    n = 0
+    for path in sorted((ROOT / "tests").glob("test_*.py")):
+        tree = ast.parse(path.read_text())
+        n += sum(isinstance(node, ast.FunctionDef) and node.name.startswith("test_") for node in ast.walk(tree))
+    return n
+
+
+def _worst(cov: dict, method: str, judge: str | None = None) -> dict:
+    rows = [g for g in cov["real_data"] if judge is None or g["judge"] == judge]
+    return min(rows, key=lambda g: g[method]["coverage"])
+
+
+def _slice(g: dict) -> str:
+    if g["confidence_quantile"] == 0:
+        kept = "all live lines"
+    else:
+        kept = f"the top {pct(1 - g['confidence_quantile'], 0)} by agent confidence"
+    return (
+        f"{JUDGE_LABEL[g['judge']]}, {SETTING_LABEL[g['setting']].lower()}, {kept}, "
+        f"true error {pct(g['true_error'], 2)}, {g['audits']} audits"
+    )
+
+
+def _auto_cell(res: dict, policy: str, budget: float, judge: str) -> str:
+    r = _roll(res, policy, HEAD["audits"], HEAD["setting"], judge, budget)
+    if policy == "judge_raw":
+        return pct(r["automation_rate"])
+    return f"{pct(r['automation_rate'])} ± {pct(r['automation_rate_sd'])}"
+
+
+def headline_table(res: dict) -> str:
+    """Upstream, 20 audits a month. One row per evidence policy that changes the conclusion."""
+    out = [
+        "| Evidence | Auto-posted at 2% | Auto-posted at 5% |",
+        "|---|---:|---:|",
+    ]
+    specs = (
+        ("Human audits, Wilson", "human_wilson", "llama"),
+        ("Judge alone", "judge_raw", "llama"),
+        ("Plain PPI, Llama-3.2-3B", "ppi_plain", "llama"),
+        ("Active PPI, Llama-3.2-3B", "active_ppi", "llama"),
+        ("Active PPI, Qwen2.5-3B", "active_ppi", "qwen"),
+    )
+    for label, policy, judge in specs:
+        cells = " | ".join(_auto_cell(res, policy, b, judge) for b in (0.02, 0.05))
+        out.append(f"| {label} | {cells} |")
+    return "\n".join(out)
+
+
+def readme_fields() -> dict[str, str]:
+    """Numbers and short generated sentences for the README. Every figure is read from results/."""
+    res, cov = _j("judgegate.json"), _j("coverage.json")
+    ql, qq = res["judges"]["llama/upstream"], res["judges"]["qwen/upstream"]
+    qcf = res["judges"]["llama/card_feed"]
+    plain2 = _roll(res, "ppi_plain", HEAD["audits"], "upstream", "llama", 0.02)
+    human2 = _roll(res, "human_wilson", HEAD["audits"], "upstream", "llama", 0.02)
+    worst_plain = _worst(cov, "ppi_plain_random_audits", "llama")
+    other = next(
+        (
+            g
+            for g in cov["real_data"]
+            if g["judge"] == worst_plain["judge"]
+            and g["setting"] == worst_plain["setting"]
+            and g["confidence_quantile"] == worst_plain["confidence_quantile"]
+            and g["audits"] != worst_plain["audits"]
+        ),
+        None,
+    )
+    worst_active = _worst(cov, "active_ppi_judge_guided_audits")
+    worst_wilson = _worst(cov, "wilson_random_audits")
+    gaps = [
+        abs(
+            _roll(res, "ppi_plain", HEAD["audits"], "upstream", "llama", b)["automation_rate"]
+            - _roll(res, "ppi_plain", HEAD["audits"], "upstream", "qwen", b)["automation_rate"]
+        )
+        for b in (0.02, 0.05, 0.10)
+    ]
+    t20 = next(t for t in ql["triage"] if t["review_share"] == 0.2)["errors_found"]
+    a20 = next(t for t in ql["triage_agent_confidence"] if t["review_share"] == 0.2)["errors_found"]
+    covid = next(x for x in ql["error_breakdown"]["agent_error_accounts"] if x["account"] == "COVID 19")
+    cf = _roll(res, "human_wilson", 40, "card_feed", "llama", 0.10)
+    src_lines, start = inspect.getsourcelines(active_ppi_terms)
+    end = start + len(src_lines) - 1
+    plain_cov = pct(worst_plain["ppi_plain_random_audits"]["coverage"])
+    same_worst = (
+        worst_active["judge"] == worst_wilson["judge"]
+        and worst_active["setting"] == worst_wilson["setting"]
+        and worst_active["confidence_quantile"] == worst_wilson["confidence_quantile"]
+        and worst_active["audits"] == worst_wilson["audits"]
+    )
+    detail = (
+        "Coverage is a separate check from the rollout. Judge scores stay fixed, the audits are redrawn 1,000 times, "
+        "and the rate is how often the 95% bound sits on or above the true error. "
+        f"Plain PPI's worst cell is {_slice(worst_plain)}: {plain_cov} of redraws. "
+    )
+    if other is not None:
+        detail += (
+            f"The same lines at {other['audits']} audits are covered "
+            f"{pct(other['ppi_plain_random_audits']['coverage'])} of the time. "
+        )
+    if same_worst:
+        detail += (
+            f"Active PPI and Wilson are at their worst on the same cell, {_slice(worst_active)}: "
+            f"{pct(worst_active['active_ppi_judge_guided_audits']['coverage'])} and "
+            f"{pct(worst_wilson['wilson_random_audits']['coverage'])}. "
+            "That cell is a high-error population, not the rare-error slice where plain PPI fails."
+        )
+    else:
+        detail += (
+            f"Active PPI's worst cell is {_slice(worst_active)} "
+            f"({pct(worst_active['active_ppi_judge_guided_audits']['coverage'])}). "
+            f"Wilson's worst is {_slice(worst_wilson)} ({pct(worst_wilson['wilson_random_audits']['coverage'])})."
+        )
+    mc = res["judge_comparison"]["upstream_llama_vs_qwen"]
+    over_draws = int(round(plain2["runs_over_budget"] * plain2["seeds"]))
+    return {
+        "scored_lines": f"{res['agent']['upstream']['lines']:,}",
+        "auc_llama": f"{ql['auc']:.3f}",
+        "auc_qwen": f"{qq['auc']:.3f}",
+        "human_2": pct(human2["automation_rate"]),
+        "plain_2": pct(plain2["automation_rate"]),
+        "plain_cov": plain_cov,
+        "headline_table": headline_table(res),
+        "coverage_detail": detail,
+        "plain_outcome": (
+            f"On the lines that plain PPI auto-posted in that 2% rollout, the mean error was "
+            f"{pct(plain2['auto_error_rate'], 2)}, and {over_draws} of the {plain2['seeds']} draws still had a month "
+            f"over the budget."
+        ),
+        "qwen_gap": (
+            f"Qwen's plain-PPI auto-post rates, at the same {HEAD['audits']} audits a month, differ from Llama's "
+            f"by at most {100 * max(gaps):.1f} percentage points across the 2%, 5%, and 10% budgets."
+        ),
+        "active_ppi_source": "".join(src_lines).rstrip("\n"),
+        "active_ppi_link": f"src/judgegate/stats.py#L{start}-L{end}",
+        "ece_llama": f"{ql['ece']:.3f}",
+        "ece_qwen": f"{qq['ece']:.3f}",
+        "ff_llama": pct(ql["false_fail_rate"]),
+        "ff_qwen": pct(qq["false_fail_rate"]),
+        "mc_disagree": (
+            f"On the upstream lines where the two judges disagree at 0.5, Llama matches staff and Qwen does not "
+            f"on {mc['only_a_right']} lines, and Qwen matches staff and Llama does not on {mc['only_b_right']:,} "
+            f"(exact McNemar; the p-value underflows to {_sci(float(mc['p_value']))} in float64). "
+            f"Agreement with staff is {pct(mc['accuracy_b'])} for Qwen and {pct(mc['accuracy_a'])} for Llama."
+        ),
+        "inc_up_agent": f"{ql['incremental']['auc_agent_confidence']:.3f}",
+        "inc_up_llama": f"{ql['incremental']['auc_agent_plus_judge']:.3f}",
+        "inc_up_qwen": f"{qq['incremental']['auc_agent_plus_judge']:.3f}",
+        "inc_cf_agent": f"{qcf['incremental']['auc_agent_confidence']:.3f}",
+        "inc_cf_llama": f"{qcf['incremental']['auc_agent_plus_judge']:.3f}",
+        "lr_up": _sci(ql["incremental"]["lr_p_value"]),
+        "lr_cf": _sci(qcf["incremental"]["lr_p_value"]),
+        "tri_judge": pct(t20, 0),
+        "tri_agent": pct(a20, 0),
+        "n_tests": str(_test_count()),
+        "covid_share": pct(covid["share"], 1),
+        "covid_base": pct(ql["error_breakdown"]["account_share_of_all_lines"]["COVID 19"], 1),
+        "cf_err": pct(qcf["agent_error_rate"]),
+        "cf_over": f"{cf['months_over_budget']:.1f}",
+        "cf_months": str(cf["live_months"]),
+        "cf_runs": pct(cf["runs_over_budget"], 0),
+        "cf_audits": str(cf["audits_per_month"]),
+    }
+
+
+def render_results_text() -> str:
+    """Long tables moved out of the README. Same JSON, same formatters."""
+    res, cov = _j("judgegate.json"), _j("coverage.json")
+    mc = res["judge_comparison"]["upstream_llama_vs_qwen"]
+    eb = res["judges"]["llama/upstream"]["error_breakdown"]
+    covid = next(x for x in eb["agent_error_accounts"] if x["account"] == "COVID 19")
+    seeds = next(r["seeds"] for r in res["rollouts"] if r["policy"] == "human_wilson")
+    live = _roll(res, "human_wilson", HEAD["audits"])
+    return f"""# Results
+
+Rendered from [`results/judgegate.json`](../results/judgegate.json) and [`results/coverage.json`](../results/coverage.json) by `judgegate readme`. [`tests/test_readme.py`](../tests/test_readme.py) fails if this file disagrees with a fresh render. The short version is the [README](../README.md).
+
+Rollout rows are means over {seeds} independent audit draws, except the raw judge, which does not draw audits. A month is over budget when the lines actually auto-posted that month have a staff-label error rate above the budget.
+
+## Judge quality
+
+{judge_rows(res)}
+
+AUC is a 95% bootstrap interval (500 resamples). Cohen's κ, false pass, and false fail are at a 0.5 cut on P(correct). False pass is the share of wrong bookings the judge approved. False fail is the share of correct bookings it rejected. ECE is expected calibration error over 10 bins, on P(wrong).
+
+Llama vs Qwen on the same upstream lines: Llama matches staff and Qwen does not on {mc["only_a_right"]} lines, the reverse on {mc["only_b_right"]:,}. The exact McNemar p-value underflows to {_sci(float(mc["p_value"]))} in float64. Agreement with staff is {pct(mc["accuracy_a"])} (Llama) and {pct(mc["accuracy_b"])} (Qwen).
+
+![Judge calibration. Predicted P(wrong) against the share staff marked wrong.](../results/calibration.png)
+
+## What the gate auto-posts
+
+Upstream, {JUDGE_LABEL[HEAD["judge"]]}, {pct(HEAD["budget"], 0)} budget, {live["live_lines"]:,} live lines over {live["live_months"]} months. Every policy that uses people has the same expected audit count. `–` is a policy that auto-posted nothing, so there is no error rate on auto-posted lines.
+
+{rollout_rows(res)}
+
+Every setting, judge, and budget at {HEAD["audits"]} audits a month. Cells are the share auto-posted, then the mean number of live months whose auto-posted lines exceeded the budget.
+
+{budget_rows(res)}
+
+![Left: share of live upstream lines auto-posted at a 2% budget, Llama judge. Right: how often each 95% bound covered the true error on Llama slices with a true error between 0 and 10%, at 400 audits.](../results/headline.png)
+
+## Does the 95% bound cover?
+
+Simulation: {cov["reps"]} repeats, population {cov["population"]:,}, 40 expected audits. Cells are coverage, then the mean upper bound. The target coverage is 95%.
+
+{sim_rows(cov)}
+
+![Coverage and mean bound in the simulation, judge strength 0.6, 40 audits.](../results/coverage.png)
+
+Real Stockport lines. The staff label is known on every line. Judge scores are recalibrated once on the six shadow months, and only the audits are redrawn, 1,000 times. The table keeps slices whose true error is between 0 and 10%, which is the range a gate is deciding in. Every slice, including the high-error ones, is in `results/coverage.json`.
+
+{coverage_rows(cov)}
+
+## Lines the Llama judge was sure about
+
+{pct(covid["share"], 1)} of the agent's upstream errors are lines staff booked to COVID 19 ({pct(eb["account_share_of_all_lines"]["COVID 19"], 1)} of upstream lines). Many of the remaining disagreements are near-synonym accounts.
+
+Wrong upstream bookings Llama-3.2-3B was most sure were correct:
+
+{mistake_rows(res)}
+
+Correct upstream bookings it was most sure were wrong:
+
+{mistake_rows(res, kind="false_fail")}
+
+The other judges are on the [site](https://vijaychamakuri.github.io/judgegate/).
+"""
+
+
 def render_text() -> str:
     text = TEMPLATE.read_text()
-    subs = values() | tables() | prose()
+    subs = values() | tables() | readme_fields() | prose()
 
     def sub(m: re.Match[str]) -> str:
         key = m.group(1)
@@ -367,7 +608,8 @@ def render_text() -> str:
 
 
 def render(write: bool = True) -> str:
-    text = render_text()
+    text, results = render_text(), render_results_text()
     if write:
         README.write_text(text)
+        RESULTS_DOC.write_text(results)
     return text

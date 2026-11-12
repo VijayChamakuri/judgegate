@@ -20,4 +20,4 @@
 
 **Same gate as TrustGate, except for the evidence.** The threshold grid, minimum evidence of 20 audits, six shadow months, monthly cadence and the "earlier months only" rule are all unchanged. Any difference in outcome comes from the evidence policy.
 
-**Determinism.** Audit draws, bootstraps and simulations are seeded. CI recomputes `results/*.json` from the committed model outputs and fails if they differ, and fails if the README does not match a fresh render.
+**Determinism.** Audit draws, bootstraps and simulations are seeded. CI recomputes `results/*.json` from the committed model outputs and fails if they differ, and fails if `README.md` or `docs/RESULTS.md` does not match a fresh render.

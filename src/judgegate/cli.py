@@ -4,7 +4,7 @@ judgegate generate     agent proposals + local LLM judge verdicts (Apple Silicon
 judgegate analyze      every statistic, from the committed cache (any OS, minutes)
 judgegate charts       results/*.png
 judgegate site         site/ (GitHub Pages)
-judgegate readme       README.md from docs/README.template.md + results (CI checks it is current)
+judgegate readme       README.md and docs/RESULTS.md from results (CI checks both are current)
 judgegate reproduce    analyze + charts + site + readme
 """
 
